@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - After Fix</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 CORS Test - After Backend Fix</h1>
+    <p>This page tests if the CORS issues have been resolved after updating the backend.</p>
+    
+    <div class="test-section">
+        <h3>🧪 Test Health Endpoint</h3>
+        <button onclick="testHealth()">Test /api/health</button>
+        <div id="health-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🧪 Test Frontend Status</h3>
+        <button onclick="testFrontendStatus()">Test /api/frontend/status</button>
+        <div id="frontend-status-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🧪 Test CORS Endpoint</h3>
+        <button onclick="testCors()">Test /api/frontend/test-cors</button>
+        <div id="cors-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🧪 Test Root Endpoint</h3>
+        <button onclick="testRoot()">Test / (root)</button>
+        <div id="root-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🧪 Test All Endpoints</h3>
+        <button onclick="testAll()">Test All Endpoints</button>
+        <div id="all-result" class="result"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://zuexisbacckend.onrender.com';
+        
+        async function testEndpoint(endpoint, method = 'GET') {
+            try {
+                console.log(`🧪 Testing ${method} ${endpoint}...`);
+                
+                const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        success: true,
+                        status: response.status,
+                        data: data,
+                        headers: Object.fromEntries(response.headers.entries())
+                    };
+                } else {
+                    return {
+                        success: false,
+                        status: response.status,
+                        statusText: response.statusText,
+                        error: `HTTP ${response.status}: ${response.statusText}`
+                    };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    type: error.name
+                };
+            }
+        }
+        
+        async function testHealth() {
+            const result = await testEndpoint('/api/health');
+            const resultDiv = document.getElementById('health-result');
+            
+            if (result.success) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <strong>✅ SUCCESS!</strong><br>
+                    Status: ${result.status}<br>
+                    CORS Headers: ${JSON.stringify(result.headers, null, 2)}<br>
+                    Response: ${JSON.stringify(result.data, null, 2)}
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ FAILED!</strong><br>
+                    Error: ${result.error}<br>
+                    Type: ${result.type || 'N/A'}
+                `;
+            }
+        }
+        
+        async function testFrontendStatus() {
+            const result = await testEndpoint('/api/frontend/status');
+            const resultDiv = document.getElementById('frontend-status-result');
+            
+            if (result.success) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <strong>✅ SUCCESS!</strong><br>
+                    Status: ${result.status}<br>
+                    CORS Headers: ${JSON.stringify(result.headers, null, 2)}<br>
+                    Response: ${JSON.stringify(result.data, null, 2)}
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ FAILED!</strong><br>
+                    Error: ${result.error}<br>
+                    Type: ${result.type || 'N/A'}
+                `;
+            }
+        }
+        
+        async function testCors() {
+            const result = await testEndpoint('/api/frontend/test-cors');
+            const resultDiv = document.getElementById('cors-result');
+            
+            if (result.success) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <strong>✅ SUCCESS!</strong><br>
+                    Status: ${result.status}<br>
+                    CORS Headers: ${JSON.stringify(result.headers, null, 2)}<br>
+                    Response: ${JSON.stringify(result.data, null, 2)}
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ FAILED!</strong><br>
+                    Error: ${result.error}<br>
+                    Type: ${result.type || 'N/A'}
+                `;
+            }
+        }
+        
+        async function testRoot() {
+            const result = await testEndpoint('/');
+            const resultDiv = document.getElementById('root-result');
+            
+            if (result.success) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <strong>✅ SUCCESS!</strong><br>
+                    Status: ${result.status}<br>
+                    CORS Headers: ${JSON.stringify(result.headers, null, 2)}<br>
+                    Response: ${JSON.stringify(result.data, null, 2)}
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ FAILED!</strong><br>
+                    Error: ${result.error}<br>
+                    Type: ${result.type || 'N/A'}
+                `;
+            }
+        }
+        
+        async function testAll() {
+            const resultDiv = document.getElementById('all-result');
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '🧪 Testing all endpoints...';
+            
+            const endpoints = [
+                { path: '/api/health', method: 'GET' },
+                { path: '/api/frontend/status', method: 'GET' },
+                { path: '/api/frontend/test-cors', method: 'GET' },
+                { path: '/', method: 'GET' }
+            ];
+            
+            const results = [];
+            
+            for (const endpoint of endpoints) {
+                const result = await testEndpoint(endpoint.path, endpoint.method);
+                results.push({
+                    endpoint: endpoint.path,
+                    method: endpoint.method,
+                    ...result
+                });
+                
+                // Small delay between requests
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            const successCount = results.filter(r => r.success).length;
+            const totalCount = results.length;
+            
+            if (successCount === totalCount) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <strong>🎉 ALL TESTS PASSED!</strong><br>
+                    ${successCount}/${totalCount} endpoints working correctly<br><br>
+                    <strong>Results:</strong><br>
+                    ${results.map(r => 
+                        `${r.success ? '✅' : '❌'} ${r.method} ${r.endpoint}: ${r.success ? 'SUCCESS' : r.error}`
+                    ).join('<br>')}
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>⚠️ SOME TESTS FAILED!</strong><br>
+                    ${successCount}/${totalCount} endpoints working correctly<br><br>
+                    <strong>Results:</strong><br>
+                    ${results.map(r => 
+                        `${r.success ? '✅' : '❌'} ${r.method} ${r.endpoint}: ${r.success ? 'SUCCESS' : r.error}`
+                    ).join('<br>')}
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

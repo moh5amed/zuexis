@@ -1,0 +1,85 @@
+{
+  "subscription_plans": [
+    {
+      "name": "Creator Lite",
+      "description": "Perfect for content creators getting started",
+      "price_monthly": 1900,
+      "price_yearly": 19000,
+      "slug": "creator-lite",
+      "features": [
+        "Unlimited video processing",
+        "Up to 50 clips per month",
+        "Basic watermark removal",
+        "Email support",
+        "720p video quality"
+      ],
+      "monthly_price_id": "price_1S026OCO6Iw1qEPlVgM9PwKf",
+      "yearly_price_id": "price_1S026OCO6Iw1qEPlcpHRse5b"
+    },
+    {
+      "name": "Pro+",
+      "description": "Advanced features for professional creators",
+      "price_monthly": 4900,
+      "price_yearly": 49000,
+      "slug": "pro-plus",
+      "features": [
+        "Unlimited video processing",
+        "Unlimited clips per month",
+        "Advanced watermark removal",
+        "Priority support",
+        "1080p video quality",
+        "Custom branding",
+        "Analytics dashboard"
+      ],
+      "monthly_price_id": "price_1S026PCO6Iw1qEPlwb3Z1dlo",
+      "yearly_price_id": "price_1S026PCO6Iw1qEPlX94zkgMt"
+    },
+    {
+      "name": "Enterprise",
+      "description": "Full-featured solution for teams and businesses",
+      "price_monthly": 9900,
+      "price_yearly": 99000,
+      "slug": "enterprise",
+      "features": [
+        "Unlimited video processing",
+        "Unlimited clips per month",
+        "Full watermark removal",
+        "24/7 priority support",
+        "4K video quality",
+        "Custom branding",
+        "Advanced analytics",
+        "Team collaboration",
+        "API access",
+        "White-label options"
+      ],
+      "monthly_price_id": "price_1S026QCO6Iw1qEPlWMfKVVlv",
+      "yearly_price_id": "price_1S026QCO6Iw1qEPlDyQGbo3J"
+    }
+  ],
+  "credits_packages": [
+    {
+      "name": "100 Credits",
+      "description": "Perfect for occasional video processing",
+      "price": 1000,
+      "credits": 100,
+      "slug": "credits-100",
+      "price_id": "price_1S026RCO6Iw1qEPlFG6HDDhq"
+    },
+    {
+      "name": "500 Credits",
+      "description": "Great value for regular creators",
+      "price": 4500,
+      "credits": 500,
+      "slug": "credits-500",
+      "price_id": "price_1S026SCO6Iw1qEPlCSZTvfHA"
+    },
+    {
+      "name": "1000 Credits",
+      "description": "Best value for heavy users",
+      "price": 8000,
+      "credits": 1000,
+      "slug": "credits-1000",
+      "price_id": "price_1S026TCO6Iw1qEPla86h9eWk"
+    }
+  ]
+}
