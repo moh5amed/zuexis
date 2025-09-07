@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connecting to Google Drive...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        p {
+            margin: 0;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        .error {
+            background: rgba(255, 59, 48, 0.2);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>Connecting to Google Drive...</h1>
+        <p>Please wait while we complete your connection.</p>
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Parse URL parameters for OAuth response
+        function parseOAuthResponse() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                showError(`OAuth Error: ${error}`);
+                return;
+            }
+            
+            if (!code) {
+                showError('No authorization code received from Google');
+                return;
+            }
+            
+            // Exchange authorization code for tokens
+            exchangeCodeForTokens(code);
+        }
+        
+        async function exchangeCodeForTokens(authCode) {
+            try {
+                // Send the authorization code to the parent window
+                // The parent will exchange it for tokens server-side
+                if (window.opener) {
+                    window.opener.postMessage({
+                        type: 'GOOGLE_OAUTH_CODE',
+                        code: authCode
+                    }, window.location.origin);
+                    
+                    // Close popup after sending message
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                } else {
+                    showError('This page should be opened in a popup window');
+                }
+            } catch (err) {
+                showError(`Failed to send authorization code: ${err.message}`);
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Update UI to show error state
+            document.querySelector('.spinner').style.display = 'none';
+            document.querySelector('h1').textContent = 'Connection Failed';
+            document.querySelector('p').textContent = 'There was an error connecting to Google Drive.';
+        }
+        
+        // Handle page load
+        window.addEventListener('load', parseOAuthResponse);
+        
+        // Handle popup close - send cancellation message
+        window.addEventListener('beforeunload', () => {
+          if (window.opener) {
+            window.opener.postMessage({
+              type: 'GOOGLE_OAUTH_CANCELLED'
+            }, window.location.origin);
+          }
+        });
+        
+        // Handle errors
+        window.addEventListener('error', (event) => {
+            showError(`Unexpected error: ${event.error?.message || 'Unknown error'}`);
+        });
+        
+        // Handle unhandled promise rejections
+        window.addEventListener('unhandledrejection', (event) => {
+            showError(`Promise rejection: ${event.reason?.message || 'Unknown error'}`);
+        });
+    </script>
+</body>
+</html>
