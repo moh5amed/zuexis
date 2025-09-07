@@ -728,7 +728,12 @@ class CloudStorageService {
       // Use popup-based OAuth flow to avoid CSP issues
       const clientId = this.config.googleDrive.clientId;
       // Use the same redirect URI that the Python backend expects
-      const redirectUri = import.meta.env.VITE_GOOGLE_DRIVE_REDIRECT_URI || 'https://www.zuexis.com/auth/callback';
+      // Temporarily hardcoded for testing - replace with environment variable later
+      const redirectUri = 'https://www.zuexis.com/auth/callback';
+      
+      // Debug: Log the redirect URI being used
+      console.log('🔍 [GoogleOAuth] Environment variable VITE_GOOGLE_DRIVE_REDIRECT_URI:', import.meta.env.VITE_GOOGLE_DRIVE_REDIRECT_URI);
+      console.log('🔍 [GoogleOAuth] Final redirect URI being used:', redirectUri);
       
       // IMPORTANT: Request offline access to get refresh token
       const scope = 'https://www.googleapis.com/auth/drive.file';
