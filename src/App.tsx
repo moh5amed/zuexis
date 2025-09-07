@@ -17,7 +17,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancelled from './pages/PaymentCancelled';
 import AuthCallback from './pages/AuthCallback';
-import OAuthCallback from './pages/OAuthCallback';
 import CloudStorageSetupPage from './pages/CloudStorageSetupPage';
 import { ToastProvider } from './components/ToastProvider';
 import { AuthProvider } from './contexts/AuthContext';
@@ -44,7 +43,6 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
-              <Route path="/oauth-callback.html" element={<OAuthCallback />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={
