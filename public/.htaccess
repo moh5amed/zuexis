@@ -1,0 +1,23 @@
+# Apache configuration for SPA
+RewriteEngine On
+
+# Handle OAuth callback
+RewriteRule ^auth/callback$ /index.html [L]
+
+# Handle all other routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+# Cache static assets
+<FilesMatch "\.(ico|png|jpg|jpeg|gif|css|js)$">
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+</FilesMatch>
+
+# Don't cache OAuth callback
+<FilesMatch "auth/callback">
+    ExpiresActive On
+    ExpiresDefault "access plus 0 seconds"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+</FilesMatch>
