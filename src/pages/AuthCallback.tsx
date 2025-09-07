@@ -14,7 +14,50 @@ const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Check if we have a user (auth was successful)
+        // Check if this is a Google OAuth callback
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        
+        if (code || error) {
+          // This is a Google OAuth callback
+          if (error) {
+            console.error('Google OAuth Error:', error);
+            // Send error to parent window if in popup
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'GOOGLE_OAUTH_ERROR',
+                error: error
+              }, window.location.origin);
+              window.close();
+            } else {
+              setStatus('error');
+              setErrorMessage(`OAuth Error: ${error}`);
+            }
+            return;
+          }
+          
+          if (code) {
+            // Send the authorization code to the parent window
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'GOOGLE_OAUTH_CODE',
+                code: code
+              }, window.location.origin);
+              
+              // Close popup after sending message
+              setTimeout(() => {
+                window.close();
+              }, 1000);
+            } else {
+              setStatus('error');
+              setErrorMessage('This page should be opened in a popup window');
+            }
+            return;
+          }
+        }
+        
+        // Regular Supabase auth callback
         if (user) {
           setStatus('success');
           // Redirect based on user onboarding status
