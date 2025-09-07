@@ -8,9 +8,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 18
-    routes:
-      - type: rewrite
-        source: /*
+    rewrites:
+      - source: /*
         destination: /index.html
     headers:
       - path: /auth/callback
