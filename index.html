@@ -1,38 +1,33 @@
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
-    },
-    {
-      "src": "/logo.png",
-      "dest": "/logo.png"
-    },
-    {
-      "src": "/logo-removebg-preview.png",
-      "dest": "/logo-removebg-preview.png"
-    },
-    {
-      "src": "/auth/callback",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
-}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Content Security Policy to allow Google OAuth, Supabase, and Stripe -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://accounts.google.com https://www.gstatic.com https://js.stripe.com https://unpkg.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https:;
+      media-src 'self' data: blob:;
+      connect-src 'self' https://www.zuexis.com https://zuexis.vercel.app https://zuexisbacckend.onrender.com https://farmguard5.onrender.com https://apis.google.com https://accounts.google.com https://www.googleapis.com https://generativelanguage.googleapis.com https://*.supabase.co https://*.supabase.com https://oauth2.googleapis.com https://www.googleapis.com/oauth2 https://www.googleapis.com/oauth2/v2 https://www.googleapis.com/drive https://www.googleapis.com/drive/v3 https://www.googleapis.com/drive/v3/about https://www.googleapis.com/drive/v3/files https://www.googleapis.com/upload https://login.microsoftonline.com https://graph.microsoft.com https://api.dropboxapi.com https://www.dropbox.com https://api.stripe.com https://api.openai.com https://unpkg.com;
+      frame-src 'self' https://accounts.google.com https://login.microsoftonline.com https://www.dropbox.com https://js.stripe.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+    ">
+    
+    <!-- Google OAuth Script -->
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+    
+    <title>Zuexis — AI Content Repurposing Platform</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
