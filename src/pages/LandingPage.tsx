@@ -811,8 +811,8 @@ const LandingPage = () => {
               <ul className="space-y-3 text-gray-400">
                 <li><a href="#" className="hover:text-purple-400 transition-colors duration-300">About</a></li>
                 <li><a href="#" className="hover:text-purple-400 transition-colors duration-300">Contact</a></li>
-                <li><a href="#" className="hover:text-purple-400 transition-colors duration-300">Privacy</a></li>
-                <li><a href="#" className="hover:text-purple-400 transition-colors duration-300">Terms</a></li>
+                <li><Link to="/privacy" className="hover:text-purple-400 transition-colors duration-300">Privacy</Link></li>
+                <li><Link to="/terms" className="hover:text-purple-400 transition-colors duration-300">Terms</Link></li>
               </ul>
             </div>
           </div>
