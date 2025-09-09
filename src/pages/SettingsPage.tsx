@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   User, 
   Mail, 
@@ -190,6 +191,25 @@ const SettingsPage = () => {
                         </div>
                       </>
                     )}
+
+                    {/* Legal Links */}
+                    <div className="mt-6 pt-6 border-t border-gray-700">
+                      <h3 className="text-lg font-semibold text-white mb-4">Legal Information</h3>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <Link
+                          to="/terms"
+                          className="text-purple-400 hover:text-purple-300 transition-colors text-sm"
+                        >
+                          Terms of Service
+                        </Link>
+                        <Link
+                          to="/privacy"
+                          className="text-purple-400 hover:text-purple-300 transition-colors text-sm"
+                        >
+                          Privacy Policy
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 )}
 
