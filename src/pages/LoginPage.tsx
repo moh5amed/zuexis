@@ -180,8 +180,26 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Back to Landing */}
+        {/* Legal Links */}
         <div className="text-center pt-4 border-t border-gray-700">
+          <div className="flex justify-center space-x-6 text-sm">
+            <Link
+              to="/terms"
+              className="text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/privacy"
+              className="text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+          </div>
+        </div>
+
+        {/* Back to Landing */}
+        <div className="text-center pt-2">
           <Link
             to="/"
             className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
