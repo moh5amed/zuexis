@@ -1,61 +1,66 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "framework": null,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/auth/callback",
-      "destination": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/auth/callback",
+      "dest": "/index.html"
     },
     {
-      "source": "/auth/callback/(.*)",
-      "destination": "/index.html"
+      "src": "/auth/callback/(.*)",
+      "dest": "/index.html"
     },
     {
-      "source": "/dashboard",
-      "destination": "/index.html"
+      "src": "/dashboard",
+      "dest": "/index.html"
     },
     {
-      "source": "/upload",
-      "destination": "/index.html"
+      "src": "/upload",
+      "dest": "/index.html"
     },
     {
-      "source": "/projects",
-      "destination": "/index.html"
+      "src": "/projects",
+      "dest": "/index.html"
     },
     {
-      "source": "/projects/(.*)",
-      "destination": "/index.html"
+      "src": "/projects/(.*)",
+      "dest": "/index.html"
     },
     {
-      "source": "/settings",
-      "destination": "/index.html"
+      "src": "/settings",
+      "dest": "/index.html"
     },
     {
-      "source": "/billing",
-      "destination": "/index.html"
+      "src": "/billing",
+      "dest": "/index.html"
     },
     {
-      "source": "/cloud-storage-setup",
-      "destination": "/index.html"
+      "src": "/cloud-storage-setup",
+      "dest": "/index.html"
     },
     {
-      "source": "/pricing",
-      "destination": "/index.html"
+      "src": "/pricing",
+      "dest": "/index.html"
     },
     {
-      "source": "/payment-success",
-      "destination": "/index.html"
+      "src": "/payment-success",
+      "dest": "/index.html"
     },
     {
-      "source": "/payment-cancelled",
-      "destination": "/index.html"
+      "src": "/payment-cancelled",
+      "dest": "/index.html"
     },
     {
-      "source": "/((?!assets/|favicon\\.ico|logo\\.png|logo-removebg-preview\\.png|_redirects).*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
