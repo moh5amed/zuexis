@@ -834,7 +834,15 @@ class CloudStorageService {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('❌ [CloudStorage] Supabase Edge Function error:', errorData);
-        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+        
+        // Handle specific error cases
+        if (errorData.code === 'CODE_EXPIRED') {
+          throw new Error('Authorization code expired. Please try connecting to Google Drive again.');
+        } else if (errorData.error && errorData.error.includes('expired')) {
+          throw new Error('Authorization code expired. Please try connecting to Google Drive again.');
+        } else {
+          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+        }
       }
       
       const tokenData = await response.json();
