@@ -728,7 +728,7 @@ class CloudStorageService {
       // Use popup-based OAuth flow to avoid CSP issues
       const clientId = this.config.googleDrive.clientId;
       // Use the same redirect URI that the Python backend expects
-      // Temporarily hardcoded for testing - replace with environment variable later
+      // Using static HTML file for better compatibility
       const redirectUri = 'https://www.zuexis.com/auth/callback';
       
       // Debug: Log the redirect URI being used
@@ -819,19 +819,21 @@ class CloudStorageService {
 
   private async exchangeCodeForTokens(authCode: string): Promise<{ access_token: string; refresh_token: string; expires_in: number }> {
     try {
-      console.log('🔄 [CloudStorage] Exchanging OAuth code for tokens via Python backend...');
+      console.log('🔄 [CloudStorage] Exchanging OAuth code for tokens via Supabase Edge Function...');
       
-      // Exchange authorization code for tokens via Python backend (original working setup)
-      const response = await fetch(`${import.meta.env.VITE_PYTHON_BACKEND_URL || 'https://zuexisbacckend.onrender.com'}/api/frontend/google-oauth`, {
+      // Exchange authorization code for tokens via Supabase Edge Function
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/google-oauth`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ code: authCode }),
       });
       
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ [CloudStorage] Supabase Edge Function error:', errorData);
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
       
@@ -841,7 +843,7 @@ class CloudStorageService {
         throw new Error(tokenData.error || 'Token exchange failed');
       }
       
-      console.log('✅ [CloudStorage] OAuth code exchanged successfully for tokens');
+      console.log('✅ [CloudStorage] OAuth code exchanged successfully for tokens via Supabase Edge Function');
       
       return {
         access_token: tokenData.access_token,
