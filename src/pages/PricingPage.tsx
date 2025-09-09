@@ -640,6 +640,29 @@ const PricingPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Legal Links Footer */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="text-center border-t border-gray-700 pt-8">
+          <div className="flex justify-center space-x-8 text-sm">
+            <Link
+              to="/terms"
+              className="text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/privacy"
+              className="text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+          </div>
+          <p className="text-gray-500 text-xs mt-4">
+            By subscribing, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
