@@ -18,6 +18,8 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancelled from './pages/PaymentCancelled';
 import AuthCallback from './pages/AuthCallback';
 import CloudStorageSetupPage from './pages/CloudStorageSetupPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import { ToastProvider } from './components/ToastProvider';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -43,6 +45,8 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/terms" element={<TermsOfServicePage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={
