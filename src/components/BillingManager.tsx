@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   CreditCard, 
   CheckCircle, 
@@ -603,6 +604,24 @@ const BillingManager: React.FC<BillingManagerProps> = ({
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-4 h-4 text-green-400" />
             <span>PCI DSS compliant payment processing</span>
+          </div>
+        </div>
+
+        {/* Legal Links */}
+        <div className="mt-4 pt-4 border-t border-gray-700">
+          <div className="flex flex-col sm:flex-row gap-4 text-sm">
+            <Link
+              to="/terms"
+              className="text-purple-400 hover:text-purple-300 transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/privacy"
+              className="text-purple-400 hover:text-purple-300 transition-colors"
+            >
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </div>
