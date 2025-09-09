@@ -11,52 +11,24 @@
   ],
   "routes": [
     {
-      "src": "/auth/callback",
-      "dest": "/index.html"
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     },
     {
-      "src": "/auth/callback/(.*)",
-      "dest": "/index.html"
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
     },
     {
-      "src": "/dashboard",
-      "dest": "/index.html"
+      "src": "/logo.png",
+      "dest": "/logo.png"
     },
     {
-      "src": "/upload",
-      "dest": "/index.html"
+      "src": "/logo-removebg-preview.png",
+      "dest": "/logo-removebg-preview.png"
     },
     {
-      "src": "/projects",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/projects/(.*)",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/settings",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/billing",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/cloud-storage-setup",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/pricing",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/payment-success",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/payment-cancelled",
-      "dest": "/index.html"
+      "src": "/_redirects",
+      "dest": "/_redirects"
     },
     {
       "src": "/(.*)",
