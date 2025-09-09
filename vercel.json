@@ -10,6 +10,50 @@
       "destination": "/index.html"
     },
     {
+      "source": "/auth/callback/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/upload",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/projects",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/projects/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/billing",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cloud-storage-setup",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/payment-success",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/payment-cancelled",
+      "destination": "/index.html"
+    },
+    {
       "source": "/((?!assets/|favicon\\.ico|logo\\.png|logo-removebg-preview\\.png|_redirects).*)",
       "destination": "/index.html"
     }
