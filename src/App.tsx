@@ -25,16 +25,27 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import SubscriptionGate from './components/SubscriptionGate';
 import ConfigWarning from './components/ConfigWarning';
+import SEOHead from './components/SEOHead';
 import { isSupabaseConfigured } from './lib/supabaseClient';
+import { initializePerformanceOptimizations } from './utils/performanceOptimization';
+import { useEffect } from 'react';
 
 function App() {
   const isConfigured = isSupabaseConfigured();
+
+  // Initialize performance optimizations
+  useEffect(() => {
+    initializePerformanceOptimizations();
+  }, []);
 
   return (
     <Router>
       <AuthProvider>
         <ToastProvider>
           <div className="min-h-screen bg-gray-900 text-white page-enter overflow-x-hidden" style={{ margin: 0, padding: 0 }}>
+            {/* SEO Head component for dynamic meta tags */}
+            <SEOHead />
+            
             {/* Show configuration warning if Supabase is not configured */}
             {!isConfigured && <ConfigWarning />}
             
