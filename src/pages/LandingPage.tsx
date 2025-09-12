@@ -145,12 +145,12 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Main Headline - Hitting Harder with Financial Benefit First */}
+          {/* Main Headline - SEO Optimized with Keywords */}
           <div className="animate-fade-in-up mb-8">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 leading-tight tracking-tight">
-              Turn Hours of Content Into
+              AI Video Clipper: Turn Hours of Content Into
               <span className="block bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mt-2">
-                Viral Shorts — Instantly
+                Viral TikTok Shorts — Instantly
               </span>
           </h1>
           </div>
@@ -159,8 +159,8 @@ const LandingPage = () => {
           <div className="animate-fade-in-up mb-12">
               <Typewriter
               phrases={[
-                "Stop wasting hours editing. Zuexis finds your best moments, captions them, and formats for every platform in minutes.",
-                "One Video. Dozens of Viral Clips. Zero Editing. Save 10+ hours per video while creating content that actually performs."
+                "Stop wasting hours editing. Zuexis AI video clipper finds your best moments, adds captions, and formats for TikTok, YouTube Shorts, and Instagram Reels in minutes.",
+                "One Video. Dozens of Viral Clips. Zero Editing. Save 10+ hours per video while creating viral content that actually performs on social media."
               ]}
               typingSpeedMs={25}
               className="text-xl sm:text-2xl lg:text-3xl text-gray-300 max-w-5xl mx-auto leading-relaxed font-light"
@@ -346,10 +346,10 @@ const LandingPage = () => {
             </div>
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              How It Works
+              How Our AI Video Clipper Works
             </span>
           </h2>
-            <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Transform your content in minutes, not hours with our AI-powered workflow</p>
+            <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Transform your long-form content into viral TikTok shorts, YouTube Shorts, and Instagram Reels in minutes, not hours with our AI-powered video editing workflow</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
@@ -608,10 +608,10 @@ const LandingPage = () => {
             </div>
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              Powerful Features
+              AI Video Clipper Features
             </span>
           </h2>
-            <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Everything you need to create viral content that engages and converts</p>
+            <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Everything you need to create viral TikTok videos, YouTube Shorts, and Instagram Reels that engage and convert</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
