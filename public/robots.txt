@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zuexis.com/sitemap.xml
+
+# Allow all important pages for indexing
+Allow: /
+Allow: /pricing
+Allow: /features
+Allow: /login
+Allow: /signup
+Allow: /privacy
+Allow: /terms
+
+# Block only sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /upload/
+Disallow: /temp/
+Disallow: /uploads/
+
+# Block development files
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /.env
+Disallow: /package.json
+Disallow: /package-lock.json
