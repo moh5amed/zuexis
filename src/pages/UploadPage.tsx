@@ -52,7 +52,10 @@ const UploadPage = () => {
     isProcessing: focusedBackendProcessing,
     progressMessage: focusedProgressMessage,
     estimatedTimeRemaining: focusedEstimatedTime,
-    processVideo: processVideoFocused
+    processVideo: processVideoFocused,
+    isConnected: focusedBackendConnected,
+    connectionStatus: focusedBackendStatus,
+    testConnection: testFocusedBackendConnection
   } = useFocusedVideoClipper();
 
   // 💳 SUBSCRIPTION SYSTEM INTEGRATION
@@ -1437,6 +1440,24 @@ const UploadPage = () => {
       return false;
     }
   };
+
+  // Poll focused backend connection until connected
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (!focusedBackendConnected) {
+      // Immediately check once
+      testFocusedBackendConnection();
+      // Then poll every 3 seconds
+      intervalId = setInterval(() => {
+        testFocusedBackendConnection();
+      }, 3000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [focusedBackendConnected, testFocusedBackendConnection]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
