@@ -2171,7 +2171,10 @@ class CloudStorageService {
         const response = await fetch(`${import.meta.env.VITE_FOCUSED_BACKEND_URL || 'https://farmguard5.onrender.com'}/api/process-video`, {
           method: 'POST',
           body: formData,
-          signal: controller.signal
+          signal: controller.signal,
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
         });
         
         clearTimeout(timeoutId);
