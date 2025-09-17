@@ -238,7 +238,10 @@ class FocusedVideoClipperService {
 
       const options: RequestInit = {
         method,
-        signal: controller.signal
+        signal: controller.signal,
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
       };
 
       if (data && method === 'POST') {
