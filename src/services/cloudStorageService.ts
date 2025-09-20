@@ -124,6 +124,10 @@ class CloudStorageService {
   private providers: Map<string, CloudStorageProvider> = new Map();
   private config: CloudStorageConfig = cloudStorageConfig;
   private currentUserId: string | null = null;
+  
+  // Debounce mechanism to prevent rapid OAuth attempts
+  private oauthDebounceTimer: NodeJS.Timeout | null = null;
+  private isOAuthInProgress = false;
 
   setCurrentUser(userId: string) {
     this.currentUserId = userId;
@@ -714,7 +718,24 @@ class CloudStorageService {
   // Google Drive Integration - User-Friendly OAuth Flow
   async connectGoogleDrive(): Promise<{ success: boolean; error?: string }> {
     try {
+      // Debounce rapid OAuth attempts
+      if (this.isOAuthInProgress) {
+        console.log('⚠️ [CloudStorage] OAuth already in progress, please wait...');
+        return { success: false, error: 'OAuth connection already in progress. Please wait...' };
+      }
+      
+      if (this.oauthDebounceTimer) {
+        clearTimeout(this.oauthDebounceTimer);
+      }
+      
+      this.oauthDebounceTimer = setTimeout(() => {
+        this.isOAuthInProgress = false;
+      }, 2000); // 2 second debounce
+      
+      this.isOAuthInProgress = true;
+      
       if (!this.currentUserId) {
+        this.isOAuthInProgress = false;
         throw new Error('Please log in to connect your cloud storage');
       }
 
@@ -763,12 +784,24 @@ class CloudStorageService {
       
       // Wait for OAuth completion
       return new Promise((resolve) => {
+        let isProcessing = false; // Flag to prevent multiple processing
+        const processedCodes = new Set<string>(); // Track processed codes
+        
         // Listen for OAuth response via postMessage
         const handleMessage = (event: MessageEvent) => {
           if (event.origin !== window.location.origin) return;
           
           if (event.data.type === 'GOOGLE_OAUTH_CODE') {
             const { code } = event.data;
+            
+            // Prevent processing the same code multiple times
+            if (isProcessing || processedCodes.has(code)) {
+              console.log('⚠️ [CloudStorage] OAuth code already being processed or already processed, ignoring duplicate');
+              return;
+            }
+            
+            isProcessing = true;
+            processedCodes.add(code);
             console.log('🔑 [CloudStorage] Received OAuth code, exchanging for tokens...');
             
             // Exchange authorization code for tokens
@@ -779,22 +812,30 @@ class CloudStorageService {
                 this.saveGoogleDriveConnection(tokens.access_token, tokens.refresh_token, tokens.expires_in)
                   .then(() => {
                     window.removeEventListener('message', handleMessage);
+                    popup.close();
+                    this.isOAuthInProgress = false;
                     console.log('✅ [CloudStorage] Google Drive connection saved successfully');
                     resolve({ success: true });
                   })
                   .catch((error: Error) => {
                     window.removeEventListener('message', handleMessage);
+                    popup.close();
+                    this.isOAuthInProgress = false;
                     console.error('❌ [CloudStorage] Failed to save connection:', error);
                     resolve({ success: false, error: error.message });
                   });
               })
               .catch((error: Error) => {
                 window.removeEventListener('message', handleMessage);
+                popup.close();
+                this.isOAuthInProgress = false;
                 console.error('❌ [CloudStorage] Failed to exchange code for tokens:', error);
                 resolve({ success: false, error: error.message });
               });
           } else if (event.data.type === 'GOOGLE_OAUTH_CANCELLED') {
             window.removeEventListener('message', handleMessage);
+            popup.close();
+            this.isOAuthInProgress = false;
             console.log('❌ [CloudStorage] OAuth was cancelled by user');
             resolve({ success: false, error: 'Google Drive connection was cancelled' });
           }
@@ -806,12 +847,14 @@ class CloudStorageService {
         setTimeout(() => {
           window.removeEventListener('message', handleMessage);
           popup.close();
+          this.isOAuthInProgress = false;
           console.log('⏰ [CloudStorage] OAuth timeout, closing popup');
           resolve({ success: false, error: 'Connection timeout. Please try again.' });
         }, 300000);
       });
       
     } catch (error) {
+      this.isOAuthInProgress = false;
       console.error('❌ [CloudStorage] Google Drive connection failed:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
@@ -821,46 +864,66 @@ class CloudStorageService {
     try {
       console.log('🔄 [CloudStorage] Exchanging OAuth code for tokens via Supabase Edge Function...');
       
-      // Exchange authorization code for tokens via Supabase Edge Function
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/google-oauth`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({ code: authCode }),
-      });
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('❌ [CloudStorage] Supabase Edge Function error:', errorData);
+      try {
+        // Exchange authorization code for tokens via Supabase Edge Function
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/google-oauth`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ code: authCode }),
+          signal: controller.signal
+        });
         
-        // Handle specific error cases
-        if (errorData.code === 'CODE_EXPIRED') {
-          throw new Error('Authorization code expired. Please try connecting to Google Drive again.');
-        } else if (errorData.error && errorData.error.includes('expired')) {
-          throw new Error('Authorization code expired. Please try connecting to Google Drive again.');
-        } else {
-          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('❌ [CloudStorage] Supabase Edge Function error:', errorData);
+          
+          // Handle specific error cases
+          if (errorData.code === 'CODE_EXPIRED' || errorData.error === 'invalid_grant') {
+            throw new Error('Authorization code expired or already used. Please try connecting to Google Drive again.');
+          } else if (errorData.error && (errorData.error.includes('expired') || errorData.error.includes('invalid_grant'))) {
+            throw new Error('Authorization code expired or already used. Please try connecting to Google Drive again.');
+          } else if (response.status === 401) {
+            throw new Error('Authentication failed. Please check your Google OAuth configuration.');
+          } else if (response.status === 400) {
+            throw new Error('Invalid request. Please try connecting to Google Drive again.');
+          } else {
+            throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+          }
         }
+        
+        const tokenData = await response.json();
+        
+        if (!tokenData.success) {
+          throw new Error(tokenData.error || 'Token exchange failed');
+        }
+        
+        console.log('✅ [CloudStorage] OAuth code exchanged successfully for tokens via Supabase Edge Function');
+        
+        return {
+          access_token: tokenData.access_token,
+          refresh_token: tokenData.refresh_token,
+          expires_in: tokenData.expires_in
+        };
+        
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          throw new Error('Token exchange timed out. Please try connecting to Google Drive again.');
+        }
+        throw fetchError;
       }
-      
-      const tokenData = await response.json();
-      
-      if (!tokenData.success) {
-        throw new Error(tokenData.error || 'Token exchange failed');
-      }
-      
-      console.log('✅ [CloudStorage] OAuth code exchanged successfully for tokens via Supabase Edge Function');
-      
-      return {
-        access_token: tokenData.access_token,
-        refresh_token: tokenData.refresh_token,
-        expires_in: tokenData.expires_in
-      };
     } catch (error) {
       console.error('❌ [CloudStorage] Failed to exchange code for tokens:', error);
-      throw new Error('Failed to exchange authorization code for tokens');
+      throw error;
     }
   }
 
